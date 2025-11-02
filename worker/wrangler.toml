@@ -1,0 +1,13 @@
+name = "codraw-worker"
+main = "src/index.ts"
+compatibility_date = "2025-10-31"
+
+[durable_objects]
+bindings = [{ name = "ROOM_DO", class_name = "WhiteboardDO" }]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["WhiteboardDO"]
+
+[observability]
+enabled = true

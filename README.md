@@ -1,2 +1,2 @@
 # CoDraw
-collaborative drawing board using Cloudflare Workers &amp; Durable Objects with real-time sync over WebSockets
+Collaborative drawing board using Cloudflare Workers & Durable Objects with real-time sync over WebSockets
