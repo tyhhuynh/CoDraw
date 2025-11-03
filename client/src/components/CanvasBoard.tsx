@@ -6,7 +6,7 @@ import type { Mode, Point, Stroke } from "../types";
 import { connect } from "../lib/websocket";
 import { getRoom } from "../lib/room";
 
-const DEFAULT_COLOR = "#000000";
+const DEFAULT_COLOR = "#ffffff";
 const DEFAULT_WIDTH = 4;
 const ERASE_WIDTH = 24;
 
@@ -27,20 +27,29 @@ export default function CanvasBoard() {
         if (import.meta.env.DEV) console.log("WS open");
       },
       onMessage: (msg) => {
-        if (msg.type === "sync") {
-          historyRef.current = new History();
-          for (const s of msg.strokes) historyRef.current.push(s);
-          setStrokes(historyRef.current.all());
-        }
-        if (msg.type === "stroke") {
-          historyRef.current.push(msg.stroke);
-          setStrokes(historyRef.current.all());
-        }
-        if (msg.type === "undo") {
-          const all = historyRef.current.all().filter(s => s.id !== msg.strokeId);
-          historyRef.current = new History();
-          for (const s of all) historyRef.current.push(s);
-          setStrokes(historyRef.current.all());
+        switch (msg.type) {
+          case "sync":
+            historyRef.current = new History();
+            for (const s of msg.strokes) historyRef.current.push(s);
+            setStrokes(historyRef.current.all());
+            break;
+          
+          case "stroke":
+            historyRef.current.push(msg.stroke);
+            setStrokes(historyRef.current.all());
+            break;
+          
+          case "undo":
+            const all = historyRef.current.all().filter(s => s.id !== msg.strokeId);
+            historyRef.current = new History();
+            for (const s of all) historyRef.current.push(s);
+            setStrokes(historyRef.current.all());
+            break;
+          
+          case "clear":
+            historyRef.current = new History();
+            setStrokes([]);
+          break;
         }
       },
       onError: (e) => console.error("WS error", e),
@@ -53,13 +62,24 @@ export default function CanvasBoard() {
   }, []);
 
   const getPos = (e: React.PointerEvent<HTMLCanvasElement>): Point => {
-    const c = canvasRef.current!;
-    const r = c.getBoundingClientRect();
-    return { x: e.clientX - r.left, y: e.clientY - r.top, t: Date.now() };
+    const r = canvasRef.current!.getBoundingClientRect();
+
+    if (r.width <= 0 || r.height <= 0) {
+      return { x: 0, y: 0, t: Date.now() };
+    }
+  
+    let x = (e.clientX - r.left) / r.width;
+    let y = (e.clientY - r.top) / r.height;
+
+    x = Math.max(0, Math.min(1, x));
+    y = Math.max(0, Math.min(1, y));
+    
+    return { x, y, t: Date.now() };
   };
 
   const start = (e: React.PointerEvent<HTMLCanvasElement>) => {
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    const c = canvasRef.current!;
     const s: Stroke = {
       id: uuid(),
       mode,
@@ -96,6 +116,13 @@ export default function CanvasBoard() {
     socketRef.current?.send({ type: "undo", strokeId: last.id });
   };
 
+  const clear = () => {
+    historyRef.current = new History();
+    setStrokes([]);
+    
+    socketRef.current?.send({ type: "clear" });
+  };
+
   const drawStroke = (s: Stroke, fromRedraw: boolean) => {
     const c = canvasRef.current!;
     const ctx = c.getContext("2d")!;
@@ -114,9 +141,14 @@ export default function CanvasBoard() {
     const pts = s.points;
     if (pts.length < 2) { ctx.restore(); return; }
 
+    const canvasWidth = c.width / dpr;
+    const canvasHeight = c.height / dpr;
+
     ctx.beginPath();
-    ctx.moveTo(pts[0].x, pts[0].y);
-    for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+    ctx.moveTo(pts[0].x * canvasWidth, pts[0].y * canvasHeight);
+    for (let i = 1; i < pts.length; i++) {
+      ctx.lineTo(pts[i].x * canvasWidth, pts[i].y * canvasHeight);
+    }
     ctx.stroke();
     ctx.restore();
 
@@ -142,10 +174,10 @@ export default function CanvasBoard() {
 
   return (
     <div className="w-full h-[70vh] flex flex-col gap-3">
-      <Toolbar mode={mode} setMode={setMode} onUndo={undo} />
+      <Toolbar mode={mode} setMode={setMode} onUndo={undo} onClear={clear} />
       <canvas
         ref={canvasRef}
-        className="w-full h-full border rounded bg-white touch-none"
+        className="w-full h-full border rounded bg-bg-light touch-none"
         onPointerDown={start}
         onPointerMove={move}
         onPointerUp={end}

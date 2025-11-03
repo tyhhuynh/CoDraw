@@ -5,6 +5,7 @@ export type WSMessage =
   | { type: "sync"; strokes: Stroke[] }
   | { type: "stroke"; stroke: Stroke }
   | { type: "undo"; strokeId: string }
+  | { type: "clear"}
   | { type: "ping"; ts: number };
 
 export type WSHandlers = {

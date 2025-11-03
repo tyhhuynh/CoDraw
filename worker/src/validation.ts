@@ -42,6 +42,9 @@ export function isValidMsg(data: unknown): data is Msg {
     case "undo":
       return typeof msg.strokeId === "string";
     
+    case "clear":
+      return true;
+    
     case "ping":
       return typeof msg.ts === "number";
     
