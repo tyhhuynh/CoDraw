@@ -19,7 +19,7 @@ export function connect(roomId: string, handlers: WSHandlers = {}) {
   const base = import.meta.env.VITE_WS_URL;
   if (!base) {
     return {
-      send: (_: WSMessage) => {},
+      send: () => {},
       close: () => {},
       readyState: 3 as const,
     };

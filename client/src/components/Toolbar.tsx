@@ -16,6 +16,8 @@ export default function Toolbar({ mode, setMode, onUndo, onClear }: Props) {
         variant={mode === "draw" ? "tool-active" : "tool-inactive"}
         onClick={() => setMode("draw")}
         className="flex-1"
+        aria-pressed={mode === "draw"}
+        aria-label="draw tool"
       >
         <PenLine/>
       </Button>
@@ -23,6 +25,8 @@ export default function Toolbar({ mode, setMode, onUndo, onClear }: Props) {
         variant={mode === "erase" ? "tool-active" : "tool-inactive"}
         onClick={() => setMode("erase")}
         className="flex-1"
+        aria-pressed={mode === "erase"}
+        aria-label="erase tool"
       >
         <Eraser />
       </Button>

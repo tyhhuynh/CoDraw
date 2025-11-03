@@ -28,28 +28,30 @@ export default function CanvasBoard() {
       },
       onMessage: (msg) => {
         switch (msg.type) {
-          case "sync":
+          case "sync": {
             historyRef.current = new History();
             for (const s of msg.strokes) historyRef.current.push(s);
             setStrokes(historyRef.current.all());
             break;
-          
-          case "stroke":
+          }
+          case "stroke": {
             historyRef.current.push(msg.stroke);
             setStrokes(historyRef.current.all());
             break;
+          }
           
-          case "undo":
+          case "undo": {
             const all = historyRef.current.all().filter(s => s.id !== msg.strokeId);
             historyRef.current = new History();
             for (const s of all) historyRef.current.push(s);
             setStrokes(historyRef.current.all());
             break;
-          
-          case "clear":
+          }
+          case "clear": {
             historyRef.current = new History();
             setStrokes([]);
           break;
+          }
         }
       },
       onError: (e) => console.error("WS error", e),
@@ -79,7 +81,6 @@ export default function CanvasBoard() {
 
   const start = (e: React.PointerEvent<HTMLCanvasElement>) => {
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
-    const c = canvasRef.current!;
     const s: Stroke = {
       id: uuid(),
       mode,
@@ -94,7 +95,7 @@ export default function CanvasBoard() {
     const s = currentRef.current;
     if (!s) return;
     s.points.push(getPos(e));
-    drawStroke(s, false);
+    drawStroke(s);
   };
 
   const end = () => {
@@ -112,7 +113,7 @@ export default function CanvasBoard() {
     const last = historyRef.current.undo();
     if (!last) return;
     setStrokes(historyRef.current.all());
-
+    
     socketRef.current?.send({ type: "undo", strokeId: last.id });
   };
 
@@ -123,7 +124,7 @@ export default function CanvasBoard() {
     socketRef.current?.send({ type: "clear" });
   };
 
-  const drawStroke = (s: Stroke, fromRedraw: boolean) => {
+  const drawStroke = useCallback((s: Stroke) => {
     const c = canvasRef.current!;
     const ctx = c.getContext("2d")!;
     ctx.save();
@@ -151,16 +152,14 @@ export default function CanvasBoard() {
     }
     ctx.stroke();
     ctx.restore();
-
-    if (!fromRedraw) return;
-  };
+  }, [dpr]);
 
   const redraw = useCallback(() => {
     const c = canvasRef.current!;
     const ctx = c.getContext("2d")!;
     ctx.clearRect(0, 0, c.width, c.height);
-    for (const s of strokes) drawStroke(s, true);
-  }, [strokes]);
+    for (const s of strokes) drawStroke(s);
+  }, [strokes, drawStroke]);
 
   useEffect(() => {
     const c = canvasRef.current!;
@@ -177,7 +176,7 @@ export default function CanvasBoard() {
       <Toolbar mode={mode} setMode={setMode} onUndo={undo} onClear={clear} />
       <canvas
         ref={canvasRef}
-        className="w-full h-full border-4 border-[oklch(0.60_0.08_65)] rounded bg-[oklch(39%_0.07_160)] touch-none"
+        className="w-full h-full border-8 border-[oklch(0.60_0.08_65)] rounded bg-[oklch(0.39_0.07_160)] touch-none"
         onPointerDown={start}
         onPointerMove={move}
         onPointerUp={end}

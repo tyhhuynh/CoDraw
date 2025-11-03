@@ -1,5 +1,5 @@
 export type ButtonVariant = "primary" | "tool-active" | "tool-inactive" | "action";
-export type ButtonSize = "sm" | "md" | "lg";
+export type ButtonSize = "md" | "lg";
 
 type ButtonProps = {
   children: React.ReactNode;
@@ -19,18 +19,17 @@ export default function Button({
   className = "" 
 }: ButtonProps) {
 
-  const baseClasses = "flex items-center justify-center rounded transition-colors hover:scale-105 duration-300 touch-manipulation cursor-pointer";
+  const baseClasses = "flex items-center justify-center rounded transition-colors hover:scale-105 touch-manipulation cursor-pointer";
   
 
   const variantClasses = {
-    primary: "bg-button-active-bg text-button-active-text hover:opacity-80",
+    primary: "bg-button-active-bg text-button-active-text hover:opacity-80 disabled:cursor-not-allowed",
     "tool-active": "bg-button-active-bg text-button-active-text",
     "tool-inactive": "bg-button-inactive-bg text-button-inactive-text hover:opacity-80",
     action: "bg-button-inactive-bg text-button-inactive-text hover:opacity-80"
   };
   
   const sizeClasses = {
-    sm: "px-2 py-1.5 min-h-[36px]",
     md: "px-4 py-2.5 min-h-[44px]",
     lg: "px-6 py-3 min-h-[48px]"
   };

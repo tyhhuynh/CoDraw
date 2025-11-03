@@ -3,16 +3,12 @@
 :root {
   font-family: 'DF Thin', system-ui;
 
-  --bg: oklch(25% 0 0);
-  --bg-light: oklch(33% 0 0);
+  --bg: oklch(80% 0 0);
 
-  --text-primary: oklch(95% 0 0);
-  --text-secondary: oklch(80% 0 0);
-  --text-muted: oklch(65% 0 0);
-
-  --border: oklch(33% 0 0);
+  --text-primary: oklch(20% 0 0);
+  --text-secondary: oklch(33% 0 0);
   
-  --button-active-bg: oklch(10% 0 0);
+  --button-active-bg: oklch(20% 0 0);
   --button-active-text: oklch(90% 0 0);
   --button-inactive-bg: oklch(90% 0 0);
   --button-inactive-text: oklch(10% 0 0);
@@ -29,13 +25,9 @@ body {
 
 @theme {
   --color-bg: var(--bg);
-  --color-bg-light: var(--bg-light);
 
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
-  --color-text-muted: var(--text-muted);
-
-  --color-border: var(--border);
 
   --color-button-active-bg: var(--button-active-bg);
   --color-button-active-text: var(--button-active-text);
