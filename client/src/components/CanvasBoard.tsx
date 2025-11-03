@@ -173,11 +173,11 @@ export default function CanvasBoard() {
   }, [dpr, redraw]);
 
   return (
-    <div className="w-full h-[70vh] flex flex-col gap-3">
+    <div className="w-full h-[70vh] flex flex-col gap-4">
       <Toolbar mode={mode} setMode={setMode} onUndo={undo} onClear={clear} />
       <canvas
         ref={canvasRef}
-        className="w-full h-full border rounded bg-bg-light touch-none"
+        className="w-full h-full border-4 border-[oklch(0.60_0.08_65)] rounded bg-[oklch(39%_0.07_160)] touch-none"
         onPointerDown={start}
         onPointerMove={move}
         onPointerUp={end}

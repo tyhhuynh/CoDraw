@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Button from "./components/Button";
 import CanvasBoard from "./components/CanvasBoard";
 import { getRoom, setRoom, generateRoomId } from "./lib/room";
+import { Toaster, toast } from 'sonner';
 
 export default function App() {
   const [currentRoom, setCurrentRoom] = useState<string>(() => getRoom());
@@ -14,11 +15,52 @@ export default function App() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
-  const createRoom = () => {
+  async function copyToClipboard(text: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(textarea);
+      return ok;
+    }
+  }
+
+  const createRoom = async () => {
     const newRoomId = generateRoomId();
     setRoom(newRoomId);
     setCurrentRoom(newRoomId);
+
+    const roomUrl = window.location.href;
+
+    const copied = await copyToClipboard(roomUrl);
+
+    if (copied) {
+      toast.success('Room created', {
+        description: 'URL is copied to your clipboard!'
+      });
+    } else {
+      toast.error('Could not copy link', {
+        description: roomUrl,
+        action: {
+          label: 'Copy',
+          onClick: async () => {
+            const ok = await copyToClipboard(roomUrl);
+            if (ok) toast.success('Copied!');
+          },
+        },
+      });
+    }
+
   };
+
 
   return (
     <div className="p-4 max-w-4xl mx-auto h-full">
@@ -39,6 +81,13 @@ export default function App() {
       <div className="text-center">
         <p className="text-text-secondary text-4xl pt-4">Room ID: {currentRoom}</p>
       </div>
+
+      <Toaster
+            position="top-center"
+            richColors={true}
+            duration={3000}
+            visibleToasts={3}
+          />
       
     </div>
   );

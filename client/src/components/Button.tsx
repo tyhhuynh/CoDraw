@@ -19,11 +19,11 @@ export default function Button({
   className = "" 
 }: ButtonProps) {
 
-  const baseClasses = "flex items-center justify-center rounded border transition-colors touch-manipulation cursor-pointer";
+  const baseClasses = "flex items-center justify-center rounded transition-colors hover:scale-105 duration-300 touch-manipulation cursor-pointer";
   
 
   const variantClasses = {
-    primary: "bg-button-active-bg text-button-active-text hover:opacity-90",
+    primary: "bg-button-active-bg text-button-active-text hover:opacity-80",
     "tool-active": "bg-button-active-bg text-button-active-text",
     "tool-inactive": "bg-button-inactive-bg text-button-inactive-text hover:opacity-80",
     action: "bg-button-inactive-bg text-button-inactive-text hover:opacity-80"

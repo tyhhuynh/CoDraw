@@ -12,10 +12,10 @@
 
   --border: oklch(33% 0 0);
   
-  --button-active: oklch(20% 0 0);
-  --button-inactive: oklch(90% 0 0);
+  --button-active-bg: oklch(10% 0 0);
+  --button-active-text: oklch(90% 0 0);
   --button-inactive-bg: oklch(90% 0 0);
-  --button-inactive-text: oklch(20% 0 0);
+  --button-inactive-text: oklch(10% 0 0);
 }
 
 
