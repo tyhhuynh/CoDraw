@@ -67,6 +67,12 @@ export class WhiteboardDO {
       return;
     }
 
+    if (msg.type === "clear") {
+      this.strokes = [];
+      this.broadcast({ type: "clear" });
+      return;
+    }
+
     if (msg.type === "ping") {
       try {
         ws.send(JSON.stringify({ type: "ping", ts: msg.ts } as Msg));

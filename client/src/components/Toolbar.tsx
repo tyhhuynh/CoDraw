@@ -1,31 +1,50 @@
+import Button from "./Button";
 import type { Mode } from "../types";
+import { PenLine, Eraser, Undo2, Trash } from "lucide-react";
 
 type Props = {
   mode: Mode;
   setMode: (m: Mode) => void;
   onUndo: () => void;
+  onClear?: () => void;
 };
 
-export default function Toolbar({ mode, setMode, onUndo }: Props) {
+export default function Toolbar({ mode, setMode, onUndo, onClear }: Props) {
   return (
-    <div className="flex items-center gap-2">
-      <button
-        className={`px-3 py-1 rounded border ${mode==="draw" ? "bg-black text-white" : "bg-white"} `}
+    <div className="flex gap-4 w-full">
+      <Button
+        variant={mode === "draw" ? "tool-active" : "tool-inactive"}
         onClick={() => setMode("draw")}
+        className="flex-1"
+        aria-pressed={mode === "draw"}
+        aria-label="draw tool"
       >
-        Draw
-      </button>
-      <button
-        className={`px-3 py-1 rounded border ${mode==="erase" ? "bg-black text-white" : "bg-white"} `}
+        <PenLine/>
+      </Button>
+      <Button
+        variant={mode === "erase" ? "tool-active" : "tool-inactive"}
         onClick={() => setMode("erase")}
+        className="flex-1"
+        aria-pressed={mode === "erase"}
+        aria-label="erase tool"
       >
-        Erase
-      </button>
-
-      <div className="mx-2 h-6 w-px bg-gray-300" />
-
-      <button className="px-3 py-1 rounded border bg-white" onClick={onUndo}>Undo</button>
-      
+        <Eraser />
+      </Button>
+      <Button
+        variant="action"
+        onClick={onUndo}
+        className="flex-1"
+      >
+        <Undo2 />
+      </Button>
+      <Button
+        variant="action"
+        onClick={onClear}
+        className="flex-1"
+        disabled={!onClear}
+      >
+        <Trash />
+      </Button>
     </div>
   );
 }
