@@ -8,6 +8,8 @@ type ButtonProps = {
   size?: ButtonSize;
   disabled?: boolean;
   className?: string;
+  "aria-label"?: string;
+  "aria-pressed"?: boolean;
 };
 
 export default function Button({ 
@@ -16,7 +18,9 @@ export default function Button({
   variant = "primary", 
   size = "md",
   disabled = false,
-  className = "" 
+  className = "",
+  "aria-label": ariaLabel,
+  "aria-pressed": ariaPressed
 }: ButtonProps) {
 
   const baseClasses = "flex items-center justify-center rounded transition-colors hover:scale-105 touch-manipulation cursor-pointer";
@@ -41,6 +45,8 @@ export default function Button({
       onClick={onClick} 
       disabled={disabled}
       className={classes}
+      aria-label={ariaLabel}
+      aria-pressed={ariaPressed}
     >
       {children}
     </button>

@@ -34,6 +34,7 @@ export default function Toolbar({ mode, setMode, onUndo, onClear }: Props) {
         variant="action"
         onClick={onUndo}
         className="flex-1"
+        aria-label="undo"
       >
         <Undo2 />
       </Button>
@@ -42,6 +43,7 @@ export default function Toolbar({ mode, setMode, onUndo, onClear }: Props) {
         onClick={onClear}
         className="flex-1"
         disabled={!onClear}
+        aria-label="clear canvas"
       >
         <Trash />
       </Button>
